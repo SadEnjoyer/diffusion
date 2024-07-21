@@ -6,7 +6,7 @@ class DataLoaders:
         self.train, self.valid = dataloaders[:2]
     
     @classmethod
-    def from_dd(cls, dd, batch_size, as_tuple=True):
+    def from_dd(cls, dd, batch_size, num_workers, as_tuple=True):
         """
         from dataset dict
         """

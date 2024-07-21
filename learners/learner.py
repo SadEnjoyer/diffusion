@@ -21,8 +21,9 @@ class Learner():
         try:
             self.callback(f'before_{nm}')
             yield
-            self.callback(f'after_{nm}')
         except globals()[f'Cancel{nm.title()}Exception']: pass
+        finally: self.callback(f'after_{nm}')
+
     
     def one_epoch(self, train):
         self.model.train(train)

@@ -2,6 +2,7 @@ from .basic_callback import *
 import math
 from .exceptions import *
 import fastcore.all as fc
+import matplotlib.pyplot as plt
 
 import sys
 import os
@@ -28,3 +29,7 @@ class LRFinderCB(Callback):
         if loss < self.min: self.min = loss
         if loss > self.min*3: raise CancelFitException()
         for g in self.learn.opt.param_groups: g['lr'] *= self.lr_mult
+
+    def after_fit(self):
+        plt.plot(self.lrs, self.losses)
+        plt.xscale('log')
