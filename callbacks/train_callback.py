@@ -1,4 +1,5 @@
-from .basic_callback import *
+from .basic_callback import Callback
+
 
 class TrainCB(Callback):
     def predict(self): self.learn.preds = self.learn.model(self.learn.batch[0])

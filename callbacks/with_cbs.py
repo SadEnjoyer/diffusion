@@ -1,5 +1,6 @@
 class with_cbs:
     def __init__(self, nm): self.nm = nm
+
     def __call__(self, f):
         def _f(o, *args, **kwargs):
             try:

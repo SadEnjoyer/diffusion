@@ -1,5 +1,6 @@
-from .basic_callback import *
-from .exceptions import *
+from .basic_callback import Callback
+from .exceptions import CancelEpochException
+
 
 class SingleBatchCB(Callback):
     order = 1

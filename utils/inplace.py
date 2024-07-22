@@ -12,6 +12,7 @@ def inplace(f: Callable) -> Callable:
         return b
     return _f
 
+
 def inplace_windows(f: Callable) -> Callable:
     """
     it is not supported on Windows. 
