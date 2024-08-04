@@ -1,4 +1,4 @@
-from conv import conv
+from .conv import conv
 import torch.nn as nn
 
 
