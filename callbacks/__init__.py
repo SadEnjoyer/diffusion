@@ -10,3 +10,4 @@ from .progress_callback import *
 from .train_callback import *
 from .lr_finder_callback import *
 from .activation_stats import *
+from .batch_transform_callback import *

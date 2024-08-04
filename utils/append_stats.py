@@ -15,4 +15,4 @@ def get_hist(h): return torch.stack(h.stats[2]).t().float().log1p()
 
 def get_min(h):
     h1 = torch.stack(h.stats[2]).t().float()
-    return h1[:2].sum(0) / h1.sum(0)
+    return h1[0] / h1.sum(0)

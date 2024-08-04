@@ -5,3 +5,5 @@ from .set_seed import *
 from .hook import *
 from .append_stats import *
 from .plots import *
+from .clean_mem import *
+from .plot_func import *
