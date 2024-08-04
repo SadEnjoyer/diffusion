@@ -5,7 +5,7 @@ from collections.abc import Mapping
 def to_device(x, device='cuda:0' if torch.cuda.is_available() else 'cpu'):
     if isinstance(x, torch.Tensor): return x.to(device)
     if isinstance(x, Mapping): return {k: v.to(device) for k, v in x.items()}
-    return x
+    return type(x)(to_device(o, device) for o in x)
 
 
 def to_cpu(x):
