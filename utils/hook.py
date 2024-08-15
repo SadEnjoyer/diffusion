@@ -8,7 +8,7 @@ class Hook():
 
 
 class Hooks(list):
-    def __init__(self, methods, func): super().__init__([Hook(m, func) for m in methods])
+    def __init__(self, methods, func): super().__init__([Hook(method, func) for method in methods])
     def __enter__(self, *args): return self
     def __exit__(self, *args): self.remove()
 

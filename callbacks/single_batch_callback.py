@@ -4,4 +4,4 @@ from .exceptions import CancelEpochException
 
 class SingleBatchCB(Callback):
     order = 1
-    def after_batch(self): raise CancelEpochException()
+    def after_batch(self, learn): raise CancelEpochException()

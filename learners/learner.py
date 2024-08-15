@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 import fastcore.all as fc
-import torch
+import torch, torch.nn.functional as F
 from torch import tensor, nn, optim
 
 import sys
@@ -8,47 +8,61 @@ import os
 
 sys.path.append(os.path.abspath('..'))
 from callbacks.exceptions import *
-from callbacks import run_cbs
+from callbacks import run_cbs, with_cbs
 from functools import partial
 
 
 class Learner():
-    def __init__(self, model, dls, loss_func, lr, cbs, opt_func=optim.SGD):
+    def __init__(self, model, dls=(0,), loss_func=F.mse_loss, lr=0.1, cbs=None, opt_func=optim.SGD):
+        cbs = fc.L(cbs)
         fc.store_attr()
-        for cb in cbs: cb.learn = self
 
-    @contextmanager
-    def callback_ctx(self, nm):
+    @with_cbs('batch')
+    def _one_batch(self):
+        self.predict()
+        self.callback('after_predict')
+        self.get_loss()
+        self.callback('after_loss')
+        if self.training:
+            self.backward()
+            self.callback('after_backward')
+            self.step()
+            self.callback('after_step')
+            self.zero_grad()
+    
+    @with_cbs('epoch')
+    def _one_epoch(self):
+        for self.iter, self.batch in enumerate(self.dl): self._one_batch()
+
+    def one_epoch(self, training):
+        self.model.train(training)
+        self.dl = self.dls.train if training else self.dls.valid
+        self._one_epoch()
+
+    @with_cbs('fit')
+    def _fit(self, train, valid):
+        for self.epoch in self.epochs:
+            if train: self.one_epoch(True)
+            if valid: torch.no_grad()(self.one_epoch)(False)
+
+    def fit(self, n_epochs=1, train=True, valid=True, cbs=None, lr=None):
+        cbs = fc.L(cbs)
+
+        for cb in cbs: self.cbs.append(cb)
         try:
-            self.callback(f'before_{nm}')
-            yield
-        except globals()[f'Cancel{nm.title()}Exception']: pass
-        finally: self.callback(f'after_{nm}')
-
-    def one_epoch(self, train):
-        self.model.train(train)
-        self.dl = self.dls.train if train else self.dls.valid
-        with self.callback_ctx('epoch'):
-            for self.iter, self.batch in enumerate(self.dl):
-                with self.callback_ctx('batch'):
-                    self.predict()
-                    self.get_loss()
-                    if self.model.training:
-                        self.backward()
-                        self.step()
-                        self.zero_grad()
-
-    def fit(self, n_epochs):
-        self.n_epochs = n_epochs
-        self.epochs = range(n_epochs)
-        self.opt = self.opt_func(self.model.parameters(), self.lr)
-        with self.callback_ctx('fit'):
-            for self.epoch in self.epochs:
-                self.one_epoch(True)
-                self.one_epoch(False)
+            self.n_epoch = n_epochs
+            self.epoch = range(n_epochs)
+            if lr is None: lr = self.lr
+            if self.opt_func: self.opt = self.opt_func(self.model.parameters(), lr)
+            self._fit(train, valid)
+        finally:
+            for cb in cbs: self.cbs.remove(cb)
 
     def __getattr__(self, name):
         if name in ('predict', 'get_loss', 'backward', 'step', 'zero_grad'): return partial(self.callback, name)
         raise AttributeError(name)
 
-    def callback(self, method_nm): run_cbs(self.cbs, method_nm)
+    def callback(self, method_nm): run_cbs(self.cbs, method_nm, self)
+
+    @property
+    def training(self): return self.model.training

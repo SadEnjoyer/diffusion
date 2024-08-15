@@ -16,16 +16,16 @@ class MetricsCB(Callback):
         self.all_metrics['loss'] = self.loss = Mean()
 
     def _log(self, d): print(d)
-    def before_fit(self): self.learn.metrics = self
-    def before_epoch(self): [o.reset() for o in self.all_metrics.values()]
+    def before_fit(self, learn): self.learn.metrics = self
+    def before_epoch(self, learn): [o.reset() for o in self.all_metrics.values()]
 
-    def after_epoch(self):
+    def after_epoch(self, learn):
         log = {k: f'{v.compute():.3f}' for k, v in self.all_metrics.items()}
         log['epoch'] = self.learn.epoch
         log['train'] = self.learn.model.training
         self._log(log)
 
-    def after_batch(self):
-        x, y = to_cpu(self.learn.batch)
+    def after_batch(self, learn):
+        x, y, *_ = to_cpu(self.learn.batch)
         for m in self.metrics.values(): m.update(to_cpu(self.learn.preds), y)
         self.loss.update(to_cpu(self.learn.loss), weight=len(x))
