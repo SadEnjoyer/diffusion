@@ -14,7 +14,7 @@ class HooksCallback(Callback):
 
     def before_fit(self, learn):
         if self.mods: mods = self.mods
-        else: mods = fc.filter_ex(self.learn.model.modules(), self.mod_filter)
+        else: mods = fc.filter_ex(learn.model.modules(), self.mod_filter)
         self.hooks = Hooks(mods, self._hookfunc)
 
     def _hookfunc(self, learn, *args, **kwargs):
