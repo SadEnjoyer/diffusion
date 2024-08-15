@@ -29,7 +29,7 @@ class Learner():
             self.step()
             self.callback('after_step')
             self.zero_grad()
-    
+
     @with_cbs('epoch')
     def _one_epoch(self):
         for self.iter, self.batch in enumerate(self.dl): self._one_batch()
@@ -47,11 +47,11 @@ class Learner():
 
     def fit(self, n_epochs=1, train=True, valid=True, cbs=None, lr=None):
         cbs = fc.L(cbs)
-
+        # `add_cb` and `rm_cb` were added in lesson 18
         for cb in cbs: self.cbs.append(cb)
         try:
-            self.n_epoch = n_epochs
-            self.epoch = range(n_epochs)
+            self.n_epochs = n_epochs
+            self.epochs = range(n_epochs)
             if lr is None: lr = self.lr
             if self.opt_func: self.opt = self.opt_func(self.model.parameters(), lr)
             self._fit(train, valid)
