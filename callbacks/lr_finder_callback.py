@@ -12,6 +12,7 @@ import os
 sys.path.append(os.path.abspath('..'))
 
 from utils import to_cpu
+from learners import Learner
 
 
 class LRFinderCB(Callback):
@@ -35,3 +36,8 @@ class LRFinderCB(Callback):
     def cleanup_fit(self, learn):
         plt.plot(self.lrs, self.losses)
         plt.xscale('log')
+
+
+@fc.patch
+def lr_find(self: Learner, gamma=1.3, max_mult=3, start_lr=1e-5, max_epochs=10):
+    self.fit(max_epochs, lr=start_lr, cbs=LRFinderCB(gamma=gamma, max_mult=max_mult))
