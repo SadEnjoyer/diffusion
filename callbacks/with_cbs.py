@@ -14,7 +14,7 @@ class with_cbs:
             try:
                 o.callback(f'before_{self.nm}')
                 f(o, *args, **kwargs)
-                print(globals())
+                print(self.nm)
                 o.callback(f'after_{self.nm}')
             except globals()[f'Cancel{self.nm.title()}Exception']: pass
             finally: o.callback(f'cleanup_{self.nm}')
