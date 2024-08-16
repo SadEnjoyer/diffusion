@@ -1,6 +1,11 @@
 from .exceptions import *
 
 
+class CancelFitException(Exception): pass
+class CancelBatchException(Exception): pass
+class CancelEpochException(Exception): pass
+
+
 class with_cbs:
     def __init__(self, nm): self.nm = nm
 
