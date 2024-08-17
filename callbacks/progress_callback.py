@@ -32,7 +32,7 @@ class ProgressCB(Callback):
                     [fc.L.range(self.losses), self.losses],
                     [fc.L.range(learn.epoch).map(lambda x: (x + 1) * len(learn.dls.train)), self.val_losses]
                 ])
-    
+
     def after_epoch(self, learn):
         if not learn.training:
             if self.plot and hasattr(learn, 'metrics'):

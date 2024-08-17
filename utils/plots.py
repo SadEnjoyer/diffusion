@@ -1,11 +1,10 @@
-import math
-
-import fastcore.all as fc
-import matplotlib.pyplot as plt
-import numpy as np
+import math, fastcore.all as fc, matplotlib.pyplot as plt, numpy as np, sys, os
 from itertools import zip_longest
-
 from .append_stats import *
+
+sys.path.append(os.path.abspath('..'))
+from learners import Learner
+from callbacks import SingleBatchCB
 
 
 @fc.delegates(plt.Axes.imshow)
@@ -73,3 +72,10 @@ def show_images(ims: list,  # Images to show
     "Show all images `ims` as subplots with `rows` using `titles`"
     axs = get_grid(len(ims), nrows, ncols, **kwargs)[1].flat
     for im, t, ax in zip_longest(ims, titles or [], axs): show_image(im, ax=ax, title=t)
+
+
+@fc.patch
+@fc.delegates(show_images)
+def show_image_batch(self: Learner, max_n=9, cbs=None, **kwargs):
+    self.fit(1, cbs=[SingleBatchCB()] + fc.L(cbs))
+    show_images(self.batch[0][:max_n], **kwargs)

@@ -7,3 +7,4 @@ from .append_stats import *
 from .plots import *
 from .clean_mem import *
 from .plot_func import *
+from .mult_adds_compute import *

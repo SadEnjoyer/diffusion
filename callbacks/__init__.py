@@ -16,3 +16,4 @@ from .batch_sched_callback import *
 from .has_learn_callback import *
 from .recorder_callback import *
 from .epoch_sched_callback import *
+from .capture_preds_callback import *

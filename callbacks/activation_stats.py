@@ -13,6 +13,9 @@ from utils.append_stats import get_hist, get_min
 
 
 class ActivationStats(HooksCallback):
+    """
+    memory uneffictive!!!!!!!!!!!!
+    """
     def __init__(self, mod_filter=fc.noop): super().__init__(append_stats, mod_filter)
 
     def color_dim(self, figsize=(11, 5)):
