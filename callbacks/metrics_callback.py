@@ -28,4 +28,4 @@ class MetricsCB(Callback):
     def after_batch(self, learn):
         x, y, *_ = to_cpu(learn.batch)
         for m in self.metrics.values(): m.update(to_cpu(learn.preds), y)
-        self.loss.update(to_cpu(learn.loss.item()), weight=len(x))
+        self.loss.update(to_cpu(learn.loss), weight=len(x))
