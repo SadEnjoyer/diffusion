@@ -20,3 +20,4 @@ from .capture_preds_callback import *
 from .DDPM_callback import *
 from .mixed_precision_callback import *
 from .accelerate_callback import *
+from .multigpu_callback import *
