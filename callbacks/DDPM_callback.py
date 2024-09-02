@@ -1,4 +1,5 @@
 import torch, fastcore.all as fc
+from tqdm.notebook import tqdm
 from .basic_callback import Callback
 from .device_callback import DeviceCB
 
@@ -18,7 +19,7 @@ def sample(model, sz, alpha, alphabar, sigma, n_steps):
     device = next(model.parameters()).device
     x_t = torch.randn(sz, device=device)
     preds = []
-    for t in reversed(range(n_steps)):
+    for t in tqdm(reversed(range(n_steps))):
         t_batch = torch.full((x_t.shape[0],), t, device=device, dtype=torch.long)
         z = (torch.randn(x_t.shape) if t > 0 else torch.zeros(x_t.shape)).to(device)
         alpha_bar_t1 = alphabar[t - 1] if t > 0 else torch.tensor(1)
