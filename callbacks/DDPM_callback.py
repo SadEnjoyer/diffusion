@@ -10,7 +10,7 @@ def noisify(x_0, alpha_bar, n_steps=1000):
     epsilon = torch.randn(x_0.shape, device=device)
     alpha_bar_t = alpha_bar[t].reshape(-1, 1, 1, 1).to(device)
     xt = alpha_bar_t.sqrt() * x_0 + (1 - alpha_bar_t).sqrt() * epsilon
-    return xt, t.to(device), epsilon
+    return (xt, t.to(device)), epsilon
 
 
 @torch.no_grad()
