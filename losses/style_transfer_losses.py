@@ -34,7 +34,7 @@ class ContentLossToTarget():
 
 
 def calc_grams(img, target_layers=[1, 6, 11, 18, 25], model=None):
-    return L(torch.einsum('chw, dhw -> cd', x, x) / (x.shape[-2] * x.shape[-1])
+    return L(torch.einsum('bchw, bdhw -> cd', x, x) / (x.shape[-2] * x.shape[-1])
              for x in calc_features(img, target_layers, model))
 
 
