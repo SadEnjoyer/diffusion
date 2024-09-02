@@ -21,14 +21,14 @@ def calc_features(imgs, target_layers=[18, 25], model=None):
 
 
 class ContentLossToTarget():
-    def __init__(self, target_im, target_layers=[18, 25]):
+    def __init__(self, target_im, target_layers=[18, 25], model=None):
         fc.store_attr()
         with torch.no_grad():
-            self.target_features = calc_features(target_im, target_layers)
+            self.target_features = calc_features(target_im, target_layers, model)
 
     def __call__(self, input_im):
         return sum((f1 - f2).pow(2).mean() for f1, f2 in
-                   zip(calc_features(input_im, self.target_layers),
+                   zip(calc_features(input_im, self.target_layers, self.model),
                        self.target_features
                        ))
 
@@ -41,7 +41,7 @@ def calc_grams(img, target_layers=[1, 6, 11, 18, 25], model=None):
 class StyleLossToTarget():
     def __init__(self, target_im, target_layers=(1, 6, 11, 18, 25), model=None):
         fc.store_attr()
-        with torch.no_grad(): self.target_grams = calc_grams(target_im, target_layers)
+        with torch.no_grad(): self.target_grams = calc_grams(target_im, target_layers, model)
 
     def __call__(self, input_im):
         return sum((f1 - f2).pow(2).mean() for f1, f2 in
