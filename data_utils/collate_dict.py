@@ -19,4 +19,4 @@ def collate_dict(dataset: Dataset) -> Callable:
 
 
 def collate_ddpm(b, alphabar=None, xl=None): return noisify(default_collate(b)[xl], alphabar)
-def dl_ddpm(ds, bs=None): return DataLoader(ds, batch_size=bs, collate_fn=collate_ddpm, num_workers=4)
+def dl_ddpm(ds, bs=None, collate_fn=None, nw=None): return DataLoader(ds, batch_size=bs, collate_fn=collate_fn, num_workers=nw)
